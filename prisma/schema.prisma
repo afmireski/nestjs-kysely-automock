@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator kysely {
+  provider = "prisma-kysely"
+
+  // Optionally provide a destination directory for the generated file
+  // and a filename of your choice
+  output       = "../kysely"
+  fileName     = "kysely-types.ts"
+  // Optionally generate runtime enums to a separate file
+  enumFileName = "kysely-enums.ts"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id String @id @default(uuid()) @db.Uuid
+
+  category_id String @db.Uuid
+
+  name String @db.VarChar(300)
+
+  description String @db.Text
+
+  details Json?
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  deleted_at DateTime? @db.Timestamptz(6)
+
+  category Category @relation(fields: [category_id], references: [id])
+
+  prices ProductPrice[]
+
+  @@map("products")
+}
+
+model Category {
+  id String @id @default(uuid()) @db.Uuid
+
+  name String @db.VarChar(100)
+
+  description String @db.VarChar(200)
+
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  deleted_at DateTime? @db.Timestamptz(6)
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model ProductPrice {
+  product_id String @db.Uuid
+
+  created_at DateTime @default(now()) @db.Timestamptz(0)
+
+  value Int
+
+  product Product @relation(fields: [product_id], references: [id])
+
+  @@id([product_id, created_at])
+  @@map("product_prices")
+}
