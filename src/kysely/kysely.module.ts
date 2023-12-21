@@ -17,5 +17,6 @@ import { KyselyConfig } from 'kysely';
       useFactory: (config: KyselyConfig) => config,
     },
   ],
+  exports: [KyselyService],
 })
 export class KyselyModule extends KyselyModuleClass {}
