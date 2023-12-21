@@ -5,6 +5,7 @@ import { KyselyModule } from './kysely/kysely.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { Pool } from 'pg';
         }),
       }),
     }),
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
