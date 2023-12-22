@@ -1,3 +1,3 @@
-import { Category } from 'kysely/kysely-types';
+import { CategoryModel } from '../models/category.model';
 
-export type CategoryEntity = Omit<Category, 'updated_at'>;
+export type CategoryEntity = Omit<CategoryModel, 'updated_at'>;
