@@ -4,7 +4,7 @@ import {
   CategoriesRepository,
 } from './ports/categories-repository.port';
 import { CategoryEntity } from './entities/category.entity';
-import { InternalException } from 'src/exception-handling/internal.exception';
+import { InternalException } from '../exception-handling/internal.exception';
 
 @Injectable()
 export class CategoriesService {

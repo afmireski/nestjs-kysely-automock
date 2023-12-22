@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CategoriesRepository } from '../ports/categories-repository.port';
-import { Category } from 'kysely/kysely-types';
-import { KyselyService } from 'src/kysely/kysely.service';
+import { KyselyService } from '../../kysely/kysely.service';
 import { CategoryModel } from '../models/category.model';
+import { CategoriesRepository } from '../ports/categories-repository.port';
 
 @Injectable()
 export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
