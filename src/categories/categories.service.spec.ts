@@ -5,6 +5,7 @@ import {
   CategoriesRepository,
 } from './ports/categories-repository.port';
 import { InternalException } from '../exception-handling/internal.exception';
+import { CreateCategoryInput } from './interfaces/create-category-input.interface';
 
 describe('CategoriesService', () => {
   let service: CategoriesService;
@@ -63,6 +64,52 @@ describe('CategoriesService', () => {
         async () => await service.findById(defaultId),
       ).rejects.toStrictEqual(new InternalException(102));
       expect(repository.findById).toHaveBeenCalled();
+    });
+  });
+
+  describe('create', () => {
+    const defaultInput: CreateCategoryInput = {
+      id: '0e47224b-f44c-44af-a6b2-744780d97638',
+      name: 'Games',
+      description: 'Coisas relacionadas a games',
+    };
+
+    const mockResponse = {
+      id: '0e47224b-f44c-44af-a6b2-744780d97638',
+      name: 'Games',
+      description: 'Coisas relacionadas a games',
+      created_at: new Date('2023-12-22T17:53:25.783Z'),
+      updated_at: new Date('2023-12-22T17:53:25.783Z'),
+      deleted_at: null,
+    };
+
+    const defaultResponse = {
+      id: '0e47224b-f44c-44af-a6b2-744780d97638',
+      name: 'Games',
+      description: 'Coisas relacionadas a games',
+      created_at: new Date('2023-12-22T17:53:25.783Z'),
+      deleted_at: null,
+    };
+
+    it('should create a category', async () => {
+      repository.create.mockResolvedValue(mockResponse);
+      repository.findById.mockResolvedValue(mockResponse);
+
+      await service.create(defaultInput);
+      expect(repository.create).toHaveBeenCalled();
+
+      expect(await service.findById(defaultInput.id)).toStrictEqual(
+        defaultResponse,
+      );
+    });
+
+    it('should throw 103 exception because a failure occurred while try to create a category', async () => {
+      repository.create.mockRejectedValue(new Error());
+
+      expect(
+        async () => await service.create(defaultInput),
+      ).rejects.toStrictEqual(new InternalException(103));
+      expect(repository.create).toHaveBeenCalled();
     });
   });
 });

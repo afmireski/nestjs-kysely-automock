@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { KyselyService } from '../../kysely/kysely.service';
+import { CreateCategoryInput } from '../interfaces/create-category-input.interface';
 import { CategoryModel } from '../models/category.model';
 import { CategoriesRepository } from '../ports/categories-repository.port';
-import { CreateCategoryInput } from '../interfaces/create-category-input.interface';
-import { InternalException } from 'src/exception-handling/internal.exception';
 
 @Injectable()
 export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
