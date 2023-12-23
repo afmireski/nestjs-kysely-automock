@@ -29,7 +29,7 @@ export class CategoriesService {
   }
 
   async create(input: CreateCategoryInput): Promise<void> {
-    Promise.resolve(this.repository.create(input)).catch((_) => {
+    await Promise.resolve(this.repository.create(input)).catch((_) => {
       throw new InternalException(103);
     });
   }

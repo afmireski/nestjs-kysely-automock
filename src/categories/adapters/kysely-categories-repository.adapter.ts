@@ -20,16 +20,10 @@ export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
   }
 
   async create(input: CreateCategoryInput): Promise<CategoryModel> {
-    const { id, name, description } = input;
-
     return Promise.resolve(
       this.kyselyService.database
         .insertInto('categories')
-        .values({
-          id,
-          name,
-          description,
-        })
+        .values(input)
         .returning([
           'id',
           'name',
@@ -38,7 +32,7 @@ export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
           'updated_at',
           'deleted_at',
         ])
-        .executeTakeFirstOrThrow(),
+        .executeTakeFirst(),
     );
   }
 }

@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "products" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT (gen_random_uuid()),
     "category_id" UUID NOT NULL,
     "name" VARCHAR(300) NOT NULL,
     "description" TEXT NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE "products" (
 
 -- CreateTable
 CREATE TABLE "categories" (
-    "id" UUID NOT NULL,
+    "id" UUID NOT NULL DEFAULT (gen_random_uuid()),
     "name" VARCHAR(100) NOT NULL,
     "description" VARCHAR(200) NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -25,16 +25,16 @@ CREATE TABLE "categories" (
 );
 
 -- CreateTable
-CREATE TABLE "ProductPrice" (
-    "product_id" UUID NOT NULL,
+CREATE TABLE "product_prices" (
+    "product_id" UUID NOT NULL DEFAULT (gen_random_uuid()),
     "created_at" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "value" INTEGER NOT NULL,
 
-    CONSTRAINT "ProductPrice_pkey" PRIMARY KEY ("product_id","created_at")
+    CONSTRAINT "product_prices_pkey" PRIMARY KEY ("product_id","created_at")
 );
 
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ProductPrice" ADD CONSTRAINT "ProductPrice_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "product_prices" ADD CONSTRAINT "product_prices_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
