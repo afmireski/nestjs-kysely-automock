@@ -39,8 +39,6 @@ export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
           'deleted_at',
         ])
         .executeTakeFirstOrThrow(),
-    ).catch((_) => {
-      throw new InternalException(103);
-    });
+    );
   }
 }

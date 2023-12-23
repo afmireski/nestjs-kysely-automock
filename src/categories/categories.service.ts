@@ -5,6 +5,7 @@ import {
 } from './ports/categories-repository.port';
 import { CategoryEntity } from './entities/category.entity';
 import { InternalException } from '../exception-handling/internal.exception';
+import { CreateCategoryInput } from './interfaces/create-category-input.interface';
 
 @Injectable()
 export class CategoriesService {
@@ -24,6 +25,12 @@ export class CategoriesService {
       const { updated_at, ...response } = repositoryData;
 
       return response;
+    });
+  }
+
+  async create(input: CreateCategoryInput): Promise<void> {
+    Promise.resolve(this.repository.create(input)).catch((_) => {
+      throw new InternalException(103);
     });
   }
 }
