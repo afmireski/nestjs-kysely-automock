@@ -6,6 +6,7 @@ import {
 import { CategoryEntity } from './entities/category.entity';
 import { InternalException } from '../exception-handling/internal.exception';
 import { CreateCategoryInput } from './interfaces/create-category-input.interface';
+import { FindAllCategoriesInput } from './interfaces/find-all-categories-input.interface';
 
 @Injectable()
 export class CategoriesService {
@@ -26,6 +27,16 @@ export class CategoriesService {
 
       return response;
     });
+  }
+
+  async list(input: FindAllCategoriesInput): Promise<Array<CategoryEntity>> {
+    return Promise.resolve(this.repository.findAll(input))
+      .then((repositoryData) =>
+        repositoryData.map(({ updated_at, ...rest }) => rest),
+      )
+      .catch((_) => {
+        throw new InternalException(104);
+      });
   }
 
   async create(input: CreateCategoryInput): Promise<void> {
