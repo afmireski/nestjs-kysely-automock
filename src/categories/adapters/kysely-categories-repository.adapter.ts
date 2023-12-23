@@ -3,6 +3,7 @@ import { KyselyService } from '../../kysely/kysely.service';
 import { CreateCategoryInput } from '../interfaces/create-category-input.interface';
 import { CategoryModel } from '../models/category.model';
 import { CategoriesRepository } from '../ports/categories-repository.port';
+import { FindAllCategoriesInput } from '../interfaces/find-all-categories-input.interface';
 
 @Injectable()
 export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
@@ -15,6 +16,21 @@ export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
         .selectAll()
         .where('id', '=', id)
         .executeTakeFirst(),
+    );
+  }
+
+  async findAll(input?: FindAllCategoriesInput): Promise<CategoryModel[]> {
+    const {
+      pagination: { skip, take },
+    } = input;
+
+    return Promise.resolve(
+      this.kyselyService.database
+        .selectFrom('categories')
+        .selectAll()
+        .limit(take)
+        .offset(skip)
+        .execute(),
     );
   }
 
