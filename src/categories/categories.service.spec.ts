@@ -112,4 +112,82 @@ describe('CategoriesService', () => {
       expect(repository.create).toHaveBeenCalled();
     });
   });
+
+  describe('findById', () => {
+    const mockResponse = [
+      {
+        id: '0e47224b-f44c-44af-a6b2-744780d97638',
+        name: 'Games',
+        description: 'Coisas relacionadas a games',
+        created_at: new Date('2023-12-22T17:53:25.783Z'),
+        updated_at: new Date('2023-12-22T17:53:25.783Z'),
+        deleted_at: null,
+      },
+      {
+        id: '635182b6-6f29-449b-86bc-896fecd6efb6',
+        name: 'Livros',
+        description: 'Livros e E-books',
+        created_at: new Date('2023-12-28 16:40:18.613-0300'),
+        updated_at: new Date('2023-12-28 16:40:18.613-0300'),
+        deleted_at: null,
+      },
+      {
+        id: '96fc05e2-9f1f-4c35-b5db-3c3d4463332f',
+        name: 'Roupas',
+        description: 'Artigos de vestimenta',
+        created_at: new Date('2023-12-23 10:04:23.712-0300'),
+        updated_at: new Date('2023-12-23 10:04:23.712-0300'),
+        deleted_at: null,
+      },
+    ];
+
+    const defaultResponse = [
+      {
+        id: '0e47224b-f44c-44af-a6b2-744780d97638',
+        name: 'Games',
+        description: 'Coisas relacionadas a games',
+        created_at: new Date('2023-12-22T17:53:25.783Z'),
+        deleted_at: null,
+      },
+      {
+        id: '635182b6-6f29-449b-86bc-896fecd6efb6',
+        name: 'Livros',
+        description: 'Livros e E-books',
+        created_at: new Date('2023-12-28 16:40:18.613-0300'),
+        deleted_at: null,
+      },
+      {
+        id: '96fc05e2-9f1f-4c35-b5db-3c3d4463332f',
+        name: 'Roupas',
+        description: 'Artigos de vestimenta',
+        created_at: new Date('2023-12-23 10:04:23.712-0300'),
+        deleted_at: null,
+      },
+    ];
+
+    it('should list all categories', async () => {
+      repository.findAll.mockResolvedValue(mockResponse);
+
+      const response = await service.list();
+      expect(repository.findAll).toHaveBeenCalled();
+      expect(response).toStrictEqual(defaultResponse);
+    });
+
+    it('should list just the second category', async () => {
+      repository.findAll.mockResolvedValue([mockResponse[1]]);
+
+      const response = await service.list({ skip: 1, take: 1 });
+      expect(repository.findAll).toHaveBeenCalled();
+      expect(response).toStrictEqual([defaultResponse[1]]);
+    });
+
+    it('should throw 104 exception because a unexpected failure occurred', async () => {
+      repository.findAll.mockRejectedValue(new Error());
+
+      expect(async () => await service.list()).rejects.toStrictEqual(
+        new InternalException(104),
+      );
+      expect(repository.findAll).toHaveBeenCalled();
+    });
+  });
 });

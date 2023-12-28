@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CategoryEntity } from './entities/category.entity';
-import { GetByUUID } from 'src/global/dtos/get-by-id.dto';
+import { GetByUUID } from '../global/dtos/get-by-id.dto';
 import { CreateCategoryDto } from './dtos/create-category-input.dto';
-import { PaginationDto } from 'src/global/dtos/pagination.dto';
+import { PaginationDto } from '../global/dtos/pagination.dto';
 
 @Controller('categories')
 export class CategoriesController {

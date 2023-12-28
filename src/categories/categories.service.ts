@@ -29,7 +29,7 @@ export class CategoriesService {
     });
   }
 
-  async list(input: Pagination): Promise<Array<CategoryEntity>> {
+  async list(input?: Pagination): Promise<Array<CategoryEntity>> {
     if (!input)
       input = {
         skip: 0,
