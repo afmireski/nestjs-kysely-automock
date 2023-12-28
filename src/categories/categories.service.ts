@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Pagination } from 'src/global/interfaces/pagination';
+import { InternalException } from '../exception-handling/internal.exception';
+import { CategoryEntity } from './entities/category.entity';
+import { CreateCategoryInput } from './interfaces/create-category-input.interface';
 import {
   CATEGORIES_REPOSITORY_PORT,
   CategoriesRepository,
 } from './ports/categories-repository.port';
-import { CategoryEntity } from './entities/category.entity';
-import { InternalException } from '../exception-handling/internal.exception';
-import { CreateCategoryInput } from './interfaces/create-category-input.interface';
-import { FindAllCategoriesInput } from './interfaces/find-all-categories-input.interface';
 
 @Injectable()
 export class CategoriesService {
@@ -29,7 +29,13 @@ export class CategoriesService {
     });
   }
 
-  async list(input: FindAllCategoriesInput): Promise<Array<CategoryEntity>> {
+  async list(input: Pagination): Promise<Array<CategoryEntity>> {
+    if (!input)
+      input = {
+        skip: 0,
+        take: 20,
+      };
+
     return Promise.resolve(this.repository.findAll(input))
       .then((repositoryData) =>
         repositoryData.map(({ updated_at, ...rest }) => rest),

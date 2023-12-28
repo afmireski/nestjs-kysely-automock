@@ -3,7 +3,7 @@ import { CategoriesService } from './categories.service';
 import { CategoryEntity } from './entities/category.entity';
 import { GetByUUID } from 'src/global/dtos/get-by-id.dto';
 import { CreateCategoryDto } from './dtos/create-category-input.dto';
-import { FindAllCategoriesDto } from './dtos/find-all-categories-input.dto';
+import { PaginationDto } from 'src/global/dtos/pagination.dto';
 
 @Controller('categories')
 export class CategoriesController {
@@ -15,9 +15,7 @@ export class CategoriesController {
   }
 
   @Get()
-  async list(
-    @Query() query: FindAllCategoriesDto,
-  ): Promise<Array<CategoryEntity>> {
+  async list(@Query() query: PaginationDto): Promise<Array<CategoryEntity>> {
     return this.categoriesService.list(query);
   }
 

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Pagination } from 'src/global/interfaces/pagination';
 import { KyselyService } from '../../kysely/kysely.service';
 import { CreateCategoryInput } from '../interfaces/create-category-input.interface';
 import { CategoryModel } from '../models/category.model';
 import { CategoriesRepository } from '../ports/categories-repository.port';
-import { FindAllCategoriesInput } from '../interfaces/find-all-categories-input.interface';
 
 @Injectable()
 export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
@@ -19,10 +19,8 @@ export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
     );
   }
 
-  async findAll(input?: FindAllCategoriesInput): Promise<CategoryModel[]> {
-    const {
-      pagination: { skip, take },
-    } = input;
+  async findAll(input?: Pagination): Promise<CategoryModel[]> {
+    const { skip, take } = input;
 
     return Promise.resolve(
       this.kyselyService.database
