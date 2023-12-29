@@ -4,6 +4,7 @@ import { PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 import { CategoriesModule } from './categories/categories.module';
 import { KyselyModule } from './kysely/kysely.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { KyselyModule } from './kysely/kysely.module';
       }),
     }),
     CategoriesModule,
+    ProductsModule,
   ],
   controllers: [],
   providers: [],
