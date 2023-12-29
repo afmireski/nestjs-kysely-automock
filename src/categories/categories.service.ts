@@ -7,6 +7,7 @@ import {
   CATEGORIES_REPOSITORY_PORT,
   CategoriesRepository,
 } from './ports/categories-repository.port';
+import { UpdateCategoryInput } from './interfaces/update-category-input.interface';
 
 @Injectable()
 export class CategoriesService {
@@ -48,6 +49,14 @@ export class CategoriesService {
   async create(input: CreateCategoryInput): Promise<void> {
     await Promise.resolve(this.repository.create(input)).catch((_) => {
       throw new InternalException(103);
+    });
+  }
+
+  async update(input: UpdateCategoryInput): Promise<CategoryEntity> {
+    await this.findById(input.id);
+
+    return Promise.resolve(this.repository.update(input)).catch((_) => {
+      throw new InternalException(105);
     });
   }
 }

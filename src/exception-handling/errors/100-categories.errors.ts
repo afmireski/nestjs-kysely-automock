@@ -11,6 +11,14 @@ const categoriesErrors = {
     httpCode: 500,
     message: 'Houve uma falha ao tentar criar a categoria',
   },
+  104: {
+    httpCode: 500,
+    message: 'Houve uma falha ao tentar listar as categorias',
+  },
+  105: {
+    httpCode: 500,
+    message: 'Houve uma falha ao tentar atualizar a categoria',
+  },
 };
 
 export default categoriesErrors;

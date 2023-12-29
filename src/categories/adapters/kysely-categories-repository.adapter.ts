@@ -4,6 +4,7 @@ import { KyselyService } from '../../kysely/kysely.service';
 import { CreateCategoryInput } from '../interfaces/create-category-input.interface';
 import { CategoryModel } from '../models/category.model';
 import { CategoriesRepository } from '../ports/categories-repository.port';
+import { UpdateCategoryInput } from '../interfaces/update-category-input.interface';
 
 @Injectable()
 export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
@@ -45,6 +46,21 @@ export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
           'updated_at',
           'deleted_at',
         ])
+        .executeTakeFirst(),
+    );
+  }
+
+  async update(input: UpdateCategoryInput): Promise<CategoryModel> {
+    const { id, ...updatableData } = input;
+    return Promise.resolve(
+      this.kyselyService.database
+        .updateTable('categories')
+        .set({
+          ...updatableData,
+          updated_at: new Date(),
+        })
+        .where('id', '=', id)
+        .returningAll()
         .executeTakeFirst(),
     );
   }
