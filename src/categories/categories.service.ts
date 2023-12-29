@@ -58,8 +58,6 @@ export class CategoriesService {
     return Promise.resolve(this.repository.update(input))
       .then(({ updated_at, ...rest }) => rest)
       .catch((_) => {
-        console.log(_);
-
         throw new InternalException(105);
       });
   }

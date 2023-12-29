@@ -204,7 +204,7 @@ describe('CategoriesService', () => {
       description: 'Livros e E-books',
     };
 
-    const mockResponses = [
+    const mockResponses: any[] = [
       {
         id: '0e47224b-f44c-44af-a6b2-744780d97638',
         name: 'Games',
