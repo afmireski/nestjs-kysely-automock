@@ -6,6 +6,7 @@ import {
 } from './ports/categories-repository.port';
 import { InternalException } from '../exception-handling/internal.exception';
 import { CreateCategoryInput } from './interfaces/create-category-input.interface';
+import { UpdateCategoryInput } from './interfaces/update-category-input.interface';
 
 describe('CategoriesService', () => {
   let service: CategoriesService;
@@ -113,7 +114,7 @@ describe('CategoriesService', () => {
     });
   });
 
-  describe('findById', () => {
+  describe('findAll', () => {
     const mockResponse = [
       {
         id: '0e47224b-f44c-44af-a6b2-744780d97638',
@@ -188,6 +189,72 @@ describe('CategoriesService', () => {
         new InternalException(104),
       );
       expect(repository.findAll).toHaveBeenCalled();
+    });
+  });
+
+  describe('update', () => {
+    beforeEach(() => {
+      repository.findById.mockReset();
+      repository.update.mockReset();
+    });
+
+    const defaultInput: UpdateCategoryInput = {
+      id: '0e47224b-f44c-44af-a6b2-744780d97638',
+      name: 'Livros',
+      description: 'Livros e E-books',
+    };
+
+    const mockResponses = [
+      {
+        id: '0e47224b-f44c-44af-a6b2-744780d97638',
+        name: 'Games',
+        description: 'Coisas relacionadas a games',
+        created_at: new Date('2023-12-22T17:53:25.783Z'),
+        updated_at: new Date('2023-12-22T17:53:25.783Z'),
+        deleted_at: null,
+      },
+      {
+        ...defaultInput,
+        created_at: new Date('2023-12-22T17:53:25.783Z'),
+        updated_at: new Date('2023-12-29T12:00:00.000Z'),
+        deleted_at: null,
+      },
+    ];
+    const defaultResponse = {
+      ...defaultInput,
+      created_at: new Date('2023-12-22T17:53:25.783Z'),
+      deleted_at: null,
+    };
+
+    it('should update a category', async () => {
+      repository.findById.mockResolvedValue(mockResponses[0]);
+      repository.update.mockResolvedValue(mockResponses[1]);
+
+      const response = await service.update(defaultInput);
+      expect(repository.findById).toHaveBeenCalled();
+      expect(repository.update).toHaveBeenCalled();
+      expect(response).toStrictEqual(defaultResponse);
+    });
+
+    it('should throw 101 exception because the category was not found', async () => {
+      repository.findById.mockResolvedValue(null);
+
+      expect(
+        async () => await service.update(defaultInput),
+      ).rejects.toStrictEqual(new InternalException(101));
+      expect(repository.findById).toHaveBeenCalled();
+      expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    it('should throw 105 exception because a unexpected failure occurred', async () => {
+      repository.findById.mockResolvedValue(mockResponses[0]);
+      repository.update.mockRejectedValue(new Error());
+
+      expect(
+        async () => await service.update(defaultInput),
+      ).rejects.toStrictEqual(new InternalException(105));
+      expect(repository.findById).toHaveBeenCalled();
+      expect(repository.update).not.toHaveBeenCalled();
     });
   });
 });

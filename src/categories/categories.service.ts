@@ -55,8 +55,12 @@ export class CategoriesService {
   async update(input: UpdateCategoryInput): Promise<CategoryEntity> {
     await this.findById(input.id);
 
-    return Promise.resolve(this.repository.update(input)).catch((_) => {
-      throw new InternalException(105);
-    });
+    return Promise.resolve(this.repository.update(input))
+      .then(({ updated_at, ...rest }) => rest)
+      .catch((_) => {
+        console.log(_);
+
+        throw new InternalException(105);
+      });
   }
 }
