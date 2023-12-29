@@ -13,4 +13,6 @@ export interface CategoriesRepository {
   create(input: CreateCategoryInput): Promise<CategoryModel>;
 
   update(input: UpdateCategoryInput): Promise<CategoryModel>;
+
+  delete(id: string): Promise<string>;
 }

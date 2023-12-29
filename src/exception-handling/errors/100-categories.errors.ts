@@ -19,6 +19,10 @@ const categoriesErrors = {
     httpCode: 500,
     message: 'Houve uma falha ao tentar atualizar a categoria',
   },
+  106: {
+    httpCode: 500,
+    message: 'Houve uma falha ao tentar excluir a categoria',
+  },
 };
 
 export default categoriesErrors;

@@ -61,4 +61,12 @@ export class CategoriesService {
         throw new InternalException(105);
       });
   }
+
+  async delete(id: string): Promise<void> {
+    await this.findById(id);
+
+    await Promise.resolve(this.repository.delete(id)).catch((_) => {
+      throw new InternalException(106);
+    });
+  }
 }

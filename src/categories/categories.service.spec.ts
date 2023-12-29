@@ -257,4 +257,52 @@ describe('CategoriesService', () => {
       expect(repository.update).not.toHaveBeenCalled();
     });
   });
+
+  describe('delete', () => {
+    beforeEach(() => {
+      repository.findById.mockReset();
+      repository.delete.mockReset();
+    });
+
+    const defaultInput = '0e47224b-f44c-44af-a6b2-744780d97638';
+
+    const mockResponse = {
+      id: '0e47224b-f44c-44af-a6b2-744780d97638',
+      name: 'Games',
+      description: 'Coisas relacionadas a games',
+      created_at: new Date('2023-12-22T17:53:25.783Z'),
+      updated_at: new Date('2023-12-22T17:53:25.783Z'),
+      deleted_at: null,
+    };
+
+    it('should delete a category', async () => {
+      repository.findById.mockResolvedValue(mockResponse);
+      repository.delete.mockResolvedValue(defaultInput);
+
+      await service.delete(defaultInput);
+      expect(repository.findById).toHaveBeenCalled();
+      expect(repository.delete).toHaveBeenCalled();
+    });
+
+    it('should throw 101 exception because the category was not found', async () => {
+      repository.findById.mockResolvedValue(null);
+
+      expect(
+        async () => await service.delete(defaultInput),
+      ).rejects.toStrictEqual(new InternalException(101));
+      expect(repository.findById).toHaveBeenCalled();
+      expect(repository.delete).not.toHaveBeenCalled();
+    });
+
+    it('should throw 106 exception because a unexpected failure occurred', async () => {
+      repository.findById.mockResolvedValue(mockResponse);
+      repository.delete.mockRejectedValue(new Error());
+
+      expect(
+        async () => await service.delete(defaultInput),
+      ).rejects.toStrictEqual(new InternalException(106));
+      expect(repository.findById).toHaveBeenCalled();
+      expect(repository.delete).not.toHaveBeenCalled();
+    });
+  });
 });

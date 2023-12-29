@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -39,5 +40,10 @@ export class CategoriesController {
     @Body() body: UpdateCategoryBody,
   ): Promise<CategoryEntity> {
     return this.categoriesService.update({ ...params, ...body });
+  }
+
+  @Delete('/delete/:id')
+  async delete(@Param() params: GetByUUID): Promise<void> {
+    return this.categoriesService.delete(params.id);
   }
 }

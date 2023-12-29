@@ -64,4 +64,13 @@ export class KyselyCategoriesRepositoryAdapter implements CategoriesRepository {
         .executeTakeFirst(),
     );
   }
+
+  async delete(id: string): Promise<string> {
+    return Promise.resolve(
+      this.kyselyService.database
+        .deleteFrom('categories')
+        .where('id', '=', id)
+        .executeTakeFirst(),
+    ).then(() => id);
+  }
 }
