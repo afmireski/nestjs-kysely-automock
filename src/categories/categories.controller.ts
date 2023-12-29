@@ -1,9 +1,18 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CategoryEntity } from './entities/category.entity';
 import { GetByUUID } from '../global/dtos/get-by-id.dto';
 import { CreateCategoryDto } from './dtos/create-category-input.dto';
 import { PaginationDto } from '../global/dtos/pagination.dto';
+import { UpdateCategoryBody } from './dtos/update-category-body.input';
 
 @Controller('categories')
 export class CategoriesController {
@@ -22,5 +31,13 @@ export class CategoriesController {
   @Post('new')
   async create(@Body() body: CreateCategoryDto): Promise<void> {
     return this.categoriesService.create(body);
+  }
+
+  @Patch('/update/:id')
+  async update(
+    @Param() params: GetByUUID,
+    @Body() body: UpdateCategoryBody,
+  ): Promise<CategoryEntity> {
+    return this.categoriesService.update({ ...params, ...body });
   }
 }
