@@ -1,11 +1,14 @@
+import { CreateProductInput } from '../interfaces/create-product-input.interface';
+import { FindAllProductsInput } from '../interfaces/find-all-products-input.interface';
+import { UpdateProductInput } from '../interfaces/update-product-input.interface';
+import { ProductModel } from '../models/product.model';
+
 export interface ProductsRepository {
-  findById(input): Promise<any>;
+  findById(id: string): Promise<ProductModel>;
 
-  findAll(input): Promise<any>;
+  findAll(input: FindAllProductsInput): Promise<Array<ProductModel>>;
 
-  create(input): Promise<any>;
+  create(input: CreateProductInput): Promise<ProductModel>;
 
-  update(input): Promise<any>;
-
-  delete(input): Promise<any>;
+  update(input: UpdateProductInput): Promise<ProductModel>;
 }
