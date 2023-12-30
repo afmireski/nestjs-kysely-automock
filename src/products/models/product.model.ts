@@ -3,7 +3,7 @@ export interface ProductModel {
   category_id: string;
   name: string;
   description: string;
-  details: Record<string, unknown> | null;
+  details: Record<string, unknown> | unknown | null;
   created_at: Date;
   updated_at: Date;
   deleted_at: Date | null;
