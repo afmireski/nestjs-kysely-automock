@@ -10,7 +10,7 @@ import { ProductModel } from '../models/product.model';
 export class KyselyProductsRepositoryAdapter implements ProductsRepository {
   constructor(private readonly kyselyService: KyselyService) {}
 
-  findById(id: string): Promise<ProductModel> {
+  async findById(id: string): Promise<ProductModel> {
     return Promise.resolve(
       this.kyselyService.database
         .selectFrom('products as p')
@@ -28,9 +28,14 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
         .innerJoin('categories as c', (join) =>
           join.onRef('c.id', '=', 'p.category_id'),
         )
-        .selectAll()
+        .selectAll('p')
+        .select([
+          'c.name as category_name',
+          'c.description as category_description',
+          'price',
+        ])
         .where((eb) =>
-          eb.and([eb('c.id', '=', id), eb('c.deleted_at', '<>', null)]),
+          eb.and([eb('p.id', '=', id), eb('p.deleted_at', 'is', null)]),
         )
         .executeTakeFirst(),
     );

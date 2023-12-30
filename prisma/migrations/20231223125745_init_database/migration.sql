@@ -26,7 +26,7 @@ CREATE TABLE "categories" (
 
 -- CreateTable
 CREATE TABLE "product_prices" (
-    "product_id" UUID NOT NULL DEFAULT (gen_random_uuid()),
+    "product_id" UUID NOT NULL,
     "created_at" TIMESTAMPTZ(0) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "value" INTEGER NOT NULL,
 
