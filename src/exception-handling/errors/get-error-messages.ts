@@ -1,6 +1,6 @@
 import { InternalMessage } from '../internal.exception';
 import categoriesErrors from './100-categories.errors';
-import productsErrors from './200-products.errors copy';
+import productsErrors from './200-products.errors';
 
 export function getErrorMessages(code: number): InternalMessage {
   if (code < 100) {
