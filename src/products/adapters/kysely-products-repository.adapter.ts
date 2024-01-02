@@ -190,7 +190,9 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
       await trx
         .updateTable('products')
         .set(productData)
-        .where('id', '=', id)
+        .where((eb) =>
+          eb.and([eb('id', '=', id), eb('deleted_at', 'is', null)]),
+        )
         .executeTakeFirstOrThrow();
 
       if (price) {
