@@ -1,22 +1,21 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ProductEntity } from './entities/product.entity';
-import {
-  PRODUCTS_REPOSITORY,
-  ProductsRepository,
-} from './ports/products-repository.port';
-import { InternalException } from 'src/exception-handling/internal.exception';
-import { FindAllProductsInput } from './interfaces/find-all-products-input.interface';
-import { CreateProductInput } from './interfaces/create-product-input.interface';
-import { CategoryEntity } from 'src/categories/entities/category.entity';
 import {
   CATEGORIES_REPOSITORY_PORT,
   CategoriesRepository,
 } from 'src/categories/ports/categories-repository.port';
+import { InternalException } from 'src/exception-handling/internal.exception';
+import { ProductEntity } from './entities/product.entity';
+import { CreateProductInput } from './interfaces/create-product-input.interface';
+import { FindAllProductsInput } from './interfaces/find-all-products-input.interface';
+import {
+  PRODUCTS_REPOSITORY_PORT,
+  ProductsRepository,
+} from './ports/products-repository.port';
 
 @Injectable()
 export class ProductsService {
   constructor(
-    @Inject(PRODUCTS_REPOSITORY)
+    @Inject(PRODUCTS_REPOSITORY_PORT)
     private readonly repository: ProductsRepository,
     @Inject(CATEGORIES_REPOSITORY_PORT)
     private readonly categoriesRepository: CategoriesRepository,
@@ -83,12 +82,14 @@ export class ProductsService {
       });
   }
 
-  async create(input: CreateProductInput): Promise<CategoryEntity> {
+  async create(input: CreateProductInput): Promise<ProductEntity> {
     // Verifica se a categoria do novo produto existe
     await this.categoriesRepository.findById(input.category_id);
 
-    return Promise.resolve(this.repository.create(input)).catch((_) => {
-      throw new InternalException(204);
-    });
+    return Promise.resolve(this.repository.create(input))
+      .then((repositoryData) => this.buildSingleProductEntity(repositoryData))
+      .catch((_) => {
+        throw new InternalException(204);
+      });
   }
 }

@@ -3,7 +3,7 @@ import { FindAllProductsInput } from '../interfaces/find-all-products-input.inte
 import { UpdateProductInput } from '../interfaces/update-product-input.interface';
 import { ProductModel } from '../models/product.model';
 
-export const PRODUCTS_REPOSITORY = 'PRODUCTS_REPOSITORY';
+export const PRODUCTS_REPOSITORY_PORT = 'PRODUCTS_REPOSITORY_PORT';
 
 export interface ProductsRepository {
   findById(id: string): Promise<ProductModel>;
