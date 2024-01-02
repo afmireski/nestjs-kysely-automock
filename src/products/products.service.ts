@@ -98,8 +98,6 @@ export class ProductsService {
   }
 
   async update(input: UpdateProductInput): Promise<ProductEntity> {
-    await this.findById(input.id);
-
     return Promise.resolve(this.repository.update(input))
       .then((repositoryData) => this.buildSingleProductEntity(repositoryData))
       .catch((_) => {

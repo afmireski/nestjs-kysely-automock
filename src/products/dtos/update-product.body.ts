@@ -15,9 +15,7 @@ export class UpdateProductBody implements UpdateProductData {
   description?: string;
 
   @Validator.IsOptional()
-  @Validator.IsJSON()
   @Validator.IsNotEmptyObject()
-  @Transformer.Transform(({ value }) => (value ? JSON.parse(value) : null))
   details?: Record<string, unknown> | null;
 
   @Validator.IsOptional()
