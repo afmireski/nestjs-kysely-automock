@@ -135,13 +135,14 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
           .returning('id')
           .executeTakeFirstOrThrow();
 
-        await trx
-          .insertInto('product_prices')
-          .values({
-            product_id: product.id,
-            value: price,
-          })
-          .executeTakeFirstOrThrow();
+        if (price)
+          await trx
+            .insertInto('product_prices')
+            .values({
+              product_id: product.id,
+              value: price,
+            })
+            .executeTakeFirstOrThrow();
 
         return product.id;
       })
@@ -149,7 +150,34 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
         throw error;
       });
 
-    return Promise.resolve(this.findById(productId));
+    return Promise.resolve(
+      this.kyselyService.database
+        .selectFrom('products as p')
+        .leftJoin(
+          (eb) =>
+            eb
+              .selectFrom('product_prices as pp')
+              .select(['pp.product_id', 'pp.value as price'])
+              .where('pp.product_id', '=', productId)
+              .orderBy('pp.created_at desc')
+              .limit(1)
+              .as('price'),
+          (join) => join.on('price.product_id', '=', productId),
+        )
+        .innerJoin('categories as c', (join) =>
+          join.onRef('c.id', '=', 'p.category_id'),
+        )
+        .selectAll('p')
+        .select([
+          'c.name as category_name',
+          'c.description as category_description',
+          'price',
+        ])
+        .where((eb) =>
+          eb.and([eb('p.id', '=', productId), eb('p.deleted_at', 'is', null)]),
+        )
+        .executeTakeFirst(),
+    );
   }
 
   update(input: UpdateProductInput): Promise<ProductModel> {

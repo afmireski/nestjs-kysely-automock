@@ -84,12 +84,17 @@ export class ProductsService {
 
   async create(input: CreateProductInput): Promise<ProductEntity> {
     // Verifica se a categoria do novo produto existe
-    await this.categoriesRepository.findById(input.category_id);
 
-    return Promise.resolve(this.repository.create(input))
-      .then((repositoryData) => this.buildSingleProductEntity(repositoryData))
-      .catch((_) => {
-        throw new InternalException(204);
-      });
+    return Promise.resolve(
+      this.categoriesRepository.findById(input.category_id),
+    )
+      .then((categoryData) => {
+        if (!categoryData) throw new InternalException(101);
+
+        return this.repository.create(input).catch((_) => {
+          throw new InternalException(204);
+        });
+      })
+      .then((repositoryData) => this.buildSingleProductEntity(repositoryData));
   }
 }
