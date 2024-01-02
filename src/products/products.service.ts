@@ -111,6 +111,8 @@ export class ProductsService {
         id,
         data: { deleted_at: new Date(), updated_at: new Date() },
       }),
-    );
+    ).catch((_) => {
+      throw new InternalException(206);
+    });
   }
 }

@@ -15,6 +15,14 @@ const productsErrors = {
     httpCode: 500,
     message: 'Houve uma falha inesperada ao tentar cadastrar o novo produto',
   },
+  205: {
+    httpCode: 500,
+    message: 'Houve uma falha inesperada ao tentar atualizar o produto',
+  },
+  206: {
+    httpCode: 500,
+    message: 'Houve uma falha inesperada ao tentar excluir o produto',
+  },
 };
 
 export default productsErrors;

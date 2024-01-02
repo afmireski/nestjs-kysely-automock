@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -41,5 +42,10 @@ export class ProductsController {
     @Param() params: GetByUUID,
   ): Promise<ProductEntity> {
     return this.productsService.update({ ...params, data: body });
+  }
+
+  @Delete('/delete/:id')
+  async delete(@Param() params: GetByUUID): Promise<void> {
+    return this.productsService.delete(params.id);
   }
 }
