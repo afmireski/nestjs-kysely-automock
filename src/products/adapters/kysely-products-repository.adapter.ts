@@ -72,6 +72,7 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
     const { skip, take, ...whereFields } = input;
 
     const priceRegEx = /(?<field>^\w+)_price/;
+    const likeFieldsRegEx = /name/;
     return Promise.resolve(
       this.kyselyService.database
         .selectFrom('products as p')
@@ -100,6 +101,7 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
             eb('p.deleted_at', 'is', null),
             eb('c.deleted_at', 'is', null),
             ...Object.keys(whereFields).reduce((response, key) => {
+              const column: any = `p.${key}`;
               if (priceRegEx.test(key)) {
                 const {
                   groups: { field },
@@ -108,9 +110,10 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
                 if (field === 'max')
                   response.push(eb('price', '<=', whereFields[key]));
                 else response.push(eb('price', '>=', whereFields[key]));
+              } else if (likeFieldsRegEx.test(key)) {
+                response.push(eb(column, 'like', `%${whereFields[key]}%`));
               } else {
-                const column: any = `p.${key}`;
-                eb(column, '=', whereFields[key]);
+                response.push(eb(column, '=', whereFields[key]));
               }
 
               return response;

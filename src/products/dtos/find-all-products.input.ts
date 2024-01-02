@@ -19,7 +19,7 @@ export class FindAllProductsDto implements FindAllProductsInput {
   category_id?: string;
 
   @Validator.IsOptional()
-  @Validator.Max(300)
+  @Validator.MaxLength(300)
   @Validator.IsNotEmpty()
   name?: string;
 
