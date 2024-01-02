@@ -1,8 +1,8 @@
-import { UpdateProductData } from '../interfaces/update-product-input.interface';
-import * as Validator from 'class-validator';
 import * as Transformer from 'class-transformer';
+import * as Validator from 'class-validator';
+import { UpdateProductBodyData } from '../interfaces/update-product-input.interface';
 
-export class UpdateProductBody implements UpdateProductData {
+export class UpdateProductBody implements UpdateProductBodyData {
   @Validator.IsUUID('4')
   @Validator.IsNotEmpty()
   category_id?: string;

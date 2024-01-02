@@ -7,11 +7,11 @@ import { InternalException } from 'src/exception-handling/internal.exception';
 import { ProductEntity } from './entities/product.entity';
 import { CreateProductInput } from './interfaces/create-product-input.interface';
 import { FindAllProductsInput } from './interfaces/find-all-products-input.interface';
+import { UpdateProductServiceInput } from './interfaces/update-product-input.interface';
 import {
   PRODUCTS_REPOSITORY_PORT,
   ProductsRepository,
 } from './ports/products-repository.port';
-import { UpdateProductInput } from './interfaces/update-product-input.interface';
 
 @Injectable()
 export class ProductsService {
@@ -97,11 +97,20 @@ export class ProductsService {
     );
   }
 
-  async update(input: UpdateProductInput): Promise<ProductEntity> {
+  async update(input: UpdateProductServiceInput): Promise<ProductEntity> {
     return Promise.resolve(this.repository.update(input))
       .then((repositoryData) => this.buildSingleProductEntity(repositoryData))
       .catch((_) => {
         throw new InternalException(205);
       });
+  }
+
+  async delete(id: string): Promise<void> {
+    await Promise.resolve(
+      this.repository.update({
+        id,
+        data: { deleted_at: new Date(), updated_at: new Date() },
+      }),
+    );
   }
 }
