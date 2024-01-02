@@ -45,23 +45,25 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
 
   buildFindAllWhere(eb, fields) {
     const where = [
-      eb('products.deleted_at', 'is', null),
-      eb('categories.deleted_at', 'is', null),
+      eb('p.deleted_at', 'is', null),
+      eb('c.deleted_at', 'is', null),
     ];
 
     const priceRegEx = /(?<field>^\w+)_price/;
-    Object.keys(fields).forEach((key) => {
+    Object.keys(fields).reduce((response, key) => {
       if (priceRegEx.test(key)) {
         const {
           groups: { field },
         } = priceRegEx.exec(key);
 
-        if (field === 'max') where.push(eb('price', '<=', fields[key]));
-        else where.push(eb('price', '>=', fields[key]));
+        if (field === 'max') response.push(eb('price', '<=', fields[key]));
+        else response.push(eb('price', '>=', fields[key]));
       } else {
         eb(`p.${key}`, '=', fields[key]);
       }
-    });
+
+      return response;
+    }, []);
 
     return eb.and(where);
   }
@@ -69,10 +71,11 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
   async findAll(input: FindAllProductsInput): Promise<ProductModel[]> {
     const { skip, take, ...whereFields } = input;
 
+    const priceRegEx = /(?<field>^\w+)_price/;
     return Promise.resolve(
       this.kyselyService.database
         .selectFrom('products as p')
-        .innerJoin(
+        .innerJoinLateral(
           (eb) =>
             eb
               .selectFrom('product_prices as pp')
@@ -92,7 +95,28 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
           'c.description as category_description',
           'price',
         ])
-        .where((eb) => this.buildFindAllWhere(eb, whereFields))
+        .where((eb) =>
+          eb.and([
+            eb('p.deleted_at', 'is', null),
+            eb('c.deleted_at', 'is', null),
+            ...Object.keys(whereFields).reduce((response, key) => {
+              if (priceRegEx.test(key)) {
+                const {
+                  groups: { field },
+                } = priceRegEx.exec(key);
+
+                if (field === 'max')
+                  response.push(eb('price', '<=', whereFields[key]));
+                else response.push(eb('price', '>=', whereFields[key]));
+              } else {
+                const column: any = `p.${key}`;
+                eb(column, '=', whereFields[key]);
+              }
+
+              return response;
+            }, []),
+          ]),
+        )
         .limit(take)
         .offset(skip)
         .execute(),
