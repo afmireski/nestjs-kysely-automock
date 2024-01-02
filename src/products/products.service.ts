@@ -6,12 +6,20 @@ import {
 } from './ports/products-repository.port';
 import { InternalException } from 'src/exception-handling/internal.exception';
 import { FindAllProductsInput } from './interfaces/find-all-products-input.interface';
+import { CreateProductInput } from './interfaces/create-product-input.interface';
+import { CategoryEntity } from 'src/categories/entities/category.entity';
+import {
+  CATEGORIES_REPOSITORY_PORT,
+  CategoriesRepository,
+} from 'src/categories/ports/categories-repository.port';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @Inject(PRODUCTS_REPOSITORY)
     private readonly repository: ProductsRepository,
+    @Inject(CATEGORIES_REPOSITORY_PORT)
+    private readonly categoriesRepository: CategoriesRepository,
   ) {}
 
   buildSingleProductEntity(data): ProductEntity {
@@ -73,5 +81,14 @@ export class ProductsService {
       .catch((_) => {
         throw new InternalException(202);
       });
+  }
+
+  async create(input: CreateProductInput): Promise<CategoryEntity> {
+    // Verifica se a categoria do novo produto existe
+    await this.categoriesRepository.findById(input.category_id);
+
+    return Promise.resolve(this.repository.create(input)).catch((_) => {
+      throw new InternalException(204);
+    });
   }
 }
