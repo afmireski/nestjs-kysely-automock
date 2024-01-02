@@ -180,7 +180,27 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
     );
   }
 
-  update(input: UpdateProductInput): Promise<ProductModel> {
-    throw new Error('Method not implemented.');
+  async update(input: UpdateProductInput): Promise<ProductModel> {
+    const {
+      id,
+      data: { price, ...productData },
+    } = input;
+
+    await this.kyselyService.database.transaction().execute(async (trx) => {
+      await trx
+        .updateTable('products')
+        .set(productData)
+        .where('id', '=', id)
+        .executeTakeFirstOrThrow();
+
+      if (price) {
+        trx
+          .insertInto('product_prices')
+          .values({ product_id: id, value: price })
+          .executeTakeFirstOrThrow();
+      }
+    });
+
+    return Promise.resolve(this.findById(id));
   }
 }

@@ -1,5 +1,4 @@
 import { ProductModel } from '../models/product.model';
-import { CreateProductInput } from './create-product-input.interface';
 
 export interface UpdateProductData
   extends Partial<
@@ -9,5 +8,5 @@ export interface UpdateProductData
 }
 
 export interface UpdateProductInput extends Pick<ProductModel, 'id'> {
-  data: Partial<CreateProductInput>;
+  data: UpdateProductData;
 }
