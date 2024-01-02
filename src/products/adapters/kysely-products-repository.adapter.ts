@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { KyselyService } from '../../kysely/kysely.service';
-import { ProductsRepository } from '../ports/products-repository.port';
 import { CreateProductInput } from '../interfaces/create-product-input.interface';
 import { FindAllProductsInput } from '../interfaces/find-all-products-input.interface';
 import { UpdateProductInput } from '../interfaces/update-product-input.interface';
 import { ProductModel } from '../models/product.model';
-import { ExpressionBuilder } from 'kysely';
-import { DB } from 'kysely/kysely-types';
+import { ProductsRepository } from '../ports/products-repository.port';
 
 @Injectable()
 export class KyselyProductsRepositoryAdapter implements ProductsRepository {
@@ -126,8 +124,32 @@ export class KyselyProductsRepositoryAdapter implements ProductsRepository {
     );
   }
 
-  create(input: CreateProductInput): Promise<ProductModel> {
-    throw new Error('Method not implemented.');
+  async create(input: CreateProductInput): Promise<ProductModel> {
+    const { price, ...productModelData } = input;
+    const productId = await this.kyselyService.database
+      .transaction()
+      .execute(async (trx) => {
+        const product = await trx
+          .insertInto('products')
+          .values(productModelData)
+          .returning('id')
+          .executeTakeFirstOrThrow();
+
+        await trx
+          .insertInto('product_prices')
+          .values({
+            product_id: product.id,
+            value: price,
+          })
+          .executeTakeFirstOrThrow();
+
+        return product.id;
+      })
+      .catch((error) => {
+        throw error;
+      });
+
+    return Promise.resolve(this.findById(productId));
   }
 
   update(input: UpdateProductInput): Promise<ProductModel> {
