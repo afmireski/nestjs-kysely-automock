@@ -445,7 +445,7 @@ describe('ProductsService', () => {
       expect(repository.update).toHaveBeenCalledTimes(1);
     });
 
-    it('should delete a single produtct', async () => {
+    it('should delete a single product', async () => {
       repository.update.mockResolvedValue(defaultMock);
       repository.findById.mockResolvedValue(null);
 

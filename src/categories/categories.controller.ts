@@ -13,19 +13,22 @@ import { CategoryEntity } from './entities/category.entity';
 import { GetByUUID } from '../global/dtos/get-by-id.dto';
 import { CreateCategoryDto } from './dtos/create-category-input.dto';
 import { PaginationDto } from '../global/dtos/pagination.dto';
-import { UpdateCategoryBody } from './dtos/update-category-body.input';
+import { UpdateCategoryBody } from './dtos/update-category-body.dto';
+import * as Swagger from '@nestjs/swagger';
+import { CategoryDto } from './dtos/category.dto';
 
+@Swagger.ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get(':id')
-  async findById(@Param() params: GetByUUID): Promise<CategoryEntity> {
+  async findById(@Param() params: GetByUUID): Promise<CategoryDto> {
     return this.categoriesService.findById(params.id);
   }
 
   @Get()
-  async list(@Query() query: PaginationDto): Promise<Array<CategoryEntity>> {
+  async list(@Query() query: PaginationDto): Promise<Array<CategoryDto>> {
     return this.categoriesService.list(query);
   }
 
@@ -38,7 +41,7 @@ export class CategoriesController {
   async update(
     @Param() params: GetByUUID,
     @Body() body: UpdateCategoryBody,
-  ): Promise<CategoryEntity> {
+  ): Promise<CategoryDto> {
     return this.categoriesService.update({ ...params, ...body });
   }
 

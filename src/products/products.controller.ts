@@ -10,25 +10,26 @@ import {
   Query,
 } from '@nestjs/common';
 import { GetByUUID } from '../global/dtos/get-by-id.dto';
-import { CreateProductBody } from './dtos/create-product.body';
-import { FindAllProductsDto } from './dtos/find-all-products.input';
-import { UpdateProductBody } from './dtos/update-product.body';
+import { CreateProductBody } from './dtos/create-product-body.dto';
+import { FindAllProductsDto } from './dtos/find-all-products.dto';
+import { UpdateProductBody } from './dtos/update-product-body.dto';
 import { ProductEntity } from './entities/product.entity';
 import { ProductsService } from './products.service';
+import * as Swagger from '@nestjs/swagger';
+import { ProductDto } from './dtos/product.dto';
 
+@Swagger.ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get(':id')
-  async findById(@Param() params: GetByUUID): Promise<ProductEntity> {
+  async findById(@Param() params: GetByUUID): Promise<ProductDto> {
     return this.productsService.findById(params.id);
   }
 
   @Get()
-  async list(
-    @Query() query: FindAllProductsDto,
-  ): Promise<Array<ProductEntity>> {
+  async list(@Query() query: FindAllProductsDto): Promise<Array<ProductDto>> {
     return this.productsService.list(query);
   }
 
@@ -41,7 +42,7 @@ export class ProductsController {
   async update(
     @Body() body: UpdateProductBody,
     @Param() params: GetByUUID,
-  ): Promise<ProductEntity> {
+  ): Promise<ProductDto> {
     return this.productsService.update({ ...params, data: body });
   }
 
