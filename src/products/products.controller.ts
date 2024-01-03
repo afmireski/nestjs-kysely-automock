@@ -13,7 +13,6 @@ import { GetByUUID } from '../global/dtos/get-by-id.dto';
 import { CreateProductBody } from './dtos/create-product-body.dto';
 import { FindAllProductsDto } from './dtos/find-all-products.dto';
 import { UpdateProductBody } from './dtos/update-product-body.dto';
-import { ProductEntity } from './entities/product.entity';
 import { ProductsService } from './products.service';
 import * as Swagger from '@nestjs/swagger';
 import { ProductDto } from './dtos/product.dto';

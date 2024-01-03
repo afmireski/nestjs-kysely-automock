@@ -9,7 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { CategoryEntity } from './entities/category.entity';
 import { GetByUUID } from '../global/dtos/get-by-id.dto';
 import { CreateCategoryDto } from './dtos/create-category-input.dto';
 import { PaginationDto } from '../global/dtos/pagination.dto';

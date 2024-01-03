@@ -10,13 +10,8 @@ import {
 } from '../categories/ports/categories-repository.port';
 import { ProductEntity } from './entities/product.entity';
 import { InternalException } from '../exception-handling/internal.exception';
-import { FindAllProductsInput } from './interfaces/find-all-products-input.interface';
-import { beforeEach } from 'node:test';
 import { CreateProductInput } from './interfaces/create-product-input.interface';
-import {
-  UpdateProductInput,
-  UpdateProductServiceInput,
-} from './interfaces/update-product-input.interface';
+import { UpdateProductInput } from './interfaces/update-product-input.interface';
 
 describe('ProductsService', () => {
   let service: ProductsService;
