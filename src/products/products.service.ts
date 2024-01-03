@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   CATEGORIES_REPOSITORY_PORT,
   CategoriesRepository,
-} from 'src/categories/ports/categories-repository.port';
-import { InternalException } from 'src/exception-handling/internal.exception';
+} from '../categories/ports/categories-repository.port';
+import { InternalException } from '../exception-handling/internal.exception';
 import { ProductEntity } from './entities/product.entity';
 import { CreateProductInput } from './interfaces/create-product-input.interface';
 import { FindAllProductsInput } from './interfaces/find-all-products-input.interface';
@@ -35,6 +35,12 @@ export class ProductsService {
           const {
             groups: { field },
           } = categoryRegExp.exec(key);
+
+          if (field === 'id')
+            Object.assign(response, {
+              [key]: data[key],
+            });
+
           Object.assign(response.category, {
             [field]: data[key],
           });
@@ -48,13 +54,15 @@ export class ProductsService {
   }
 
   async findById(id: string): Promise<ProductEntity> {
-    return Promise.resolve(this.repository.findById(id)).then(
-      (repositoryData) => {
-        if (!repositoryData) throw new InternalException(201);
+    return Promise.resolve(
+      this.repository.findById(id).catch((_) => {
+        throw new InternalException(207);
+      }),
+    ).then((repositoryData) => {
+      if (!repositoryData) throw new InternalException(201);
 
-        return this.buildSingleProductEntity(repositoryData);
-      },
-    );
+      return this.buildSingleProductEntity(repositoryData);
+    });
   }
 
   async list(input: FindAllProductsInput = {}): Promise<Array<ProductEntity>> {
@@ -86,15 +94,15 @@ export class ProductsService {
   async create(input: CreateProductInput): Promise<void> {
     // Verifica se a categoria do novo produto existe
 
-    Promise.resolve(this.categoriesRepository.findById(input.category_id)).then(
-      (categoryData) => {
-        if (!categoryData) throw new InternalException(101);
+    await Promise.resolve(
+      this.categoriesRepository.findById(input.category_id),
+    ).then((categoryData) => {
+      if (!categoryData) throw new InternalException(101);
 
-        return this.repository.create(input).catch((_) => {
-          throw new InternalException(204);
-        });
-      },
-    );
+      return this.repository.create(input).catch((_) => {
+        throw new InternalException(204);
+      });
+    });
   }
 
   async update(input: UpdateProductServiceInput): Promise<ProductEntity> {

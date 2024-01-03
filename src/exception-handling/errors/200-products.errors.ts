@@ -23,6 +23,10 @@ const productsErrors = {
     httpCode: 500,
     message: 'Houve uma falha inesperada ao tentar excluir o produto',
   },
+  207: {
+    httpCode: 500,
+    message: 'Houve uma falha inesperada ao tentar buscar o produto',
+  },
 };
 
 export default productsErrors;

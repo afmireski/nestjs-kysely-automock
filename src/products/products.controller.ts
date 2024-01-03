@@ -3,17 +3,18 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { GetByUUID } from '../global/dtos/get-by-id.dto';
+import { CreateProductBody } from './dtos/create-product.body';
 import { FindAllProductsDto } from './dtos/find-all-products.input';
+import { UpdateProductBody } from './dtos/update-product.body';
 import { ProductEntity } from './entities/product.entity';
 import { ProductsService } from './products.service';
-import { CreateProductBody } from './dtos/create-product.body';
-import { UpdateProductBody } from './dtos/update-product.body';
 
 @Controller('products')
 export class ProductsController {
@@ -45,6 +46,7 @@ export class ProductsController {
   }
 
   @Delete('/delete/:id')
+  @HttpCode(204)
   async delete(@Param() params: GetByUUID): Promise<void> {
     return this.productsService.delete(params.id);
   }
